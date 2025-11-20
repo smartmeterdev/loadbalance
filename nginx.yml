@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   proxy:
-    image: nginx-custom
+    image: github.com/smartmeterdev/loadbalance/nginx-custom
     ports:
      - '80:80'
      - '443:443'
