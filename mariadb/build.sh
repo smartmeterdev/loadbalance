@@ -1,0 +1,1 @@
+docker-compose -f mariadb-cluster-setup.yaml up -d

@@ -1,0 +1,92 @@
+version: '4'
+services:
+  proxysql:
+   image: proxysql/proxysql:latest
+   container_name: proxysql
+   ports:
+     - "3306:6033"
+   volumes:
+     - ./proxysql.cnf:/etc/proxysql.cnf
+     - proxysql_data:/var/lib/proxysql
+   networks:
+        backend_net:
+            ipv4_address: 172.16.10.14
+
+  db01:
+    image: ustcweizhou/mariadb-cluster:latest
+    hostname: db01
+    networks:
+        backend_net:
+            ipv4_address: 172.16.10.11
+    volumes:
+      - docker_db01:/var/lib/mysql
+    healthcheck:
+        test: ["CMD", "mysqladmin", "-uroot", "-pcloudstack", "ping"]
+        interval: 10s
+        timeout: 10s
+        retries: 60
+        start_period: 10s
+    environment:
+      - NODE_NAME=db01
+      - CLUSTER_ADDRESS=gcomm://db01,db02,db03
+      - DB_ROOT_PASSWORD=cloudstack
+      - DB_MARIABACKUP_PASSWORD=cloudstack
+
+  db02:
+    image: ustcweizhou/mariadb-cluster:latest
+    hostname: db02
+    depends_on:
+        db01:
+            condition: service_healthy
+    networks:
+        backend_net:
+            ipv4_address: 172.16.10.12
+    volumes:
+      - docker_db02:/var/lib/mysql
+    healthcheck:
+        test: ["CMD", "mysqladmin", "-uroot", "-pcloudstack", "ping"]
+        interval: 10s
+        timeout: 10s
+        retries: 60
+        start_period: 10s
+    environment:
+      - NODE_NAME=db02
+      - CLUSTER_ADDRESS=gcomm://db01,db02,db03
+      - DB_ROOT_PASSWORD=cloudstack
+      - DB_MARIABACKUP_PASSWORD=cloudstack
+      
+  db03:
+    image: ustcweizhou/mariadb-cluster:latest
+    hostname: db03
+    depends_on:
+        db01:
+            condition: service_healthy
+        db02:
+            condition: service_healthy
+    networks:
+        backend_net:
+            ipv4_address: 172.16.10.13
+    volumes:
+      - docker_db03:/var/lib/mysql
+    environment:
+      - NODE_NAME=db03
+      - CLUSTER_ADDRESS=gcomm://db01,db02,db03
+      - DB_ROOT_PASSWORD=cloudstack
+      - DB_MARIABACKUP_PASSWORD=cloudstack
+
+
+volumes:
+  docker_db01:
+  docker_db02:
+  docker_db03:
+  proxysql_data:
+networks:
+    backend_net:
+        driver: bridge
+        driver_opts:
+            com.docker.network.bridge.name: "backend_net"
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.16.10.0/24
+                  gateway: 172.16.10.254
