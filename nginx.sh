@@ -1,3 +1,3 @@
 docker build  -t nginx-custom -f ./nginx.dockerfile .
 
-docker compose -f nginx.yml up -d
+docker-compose -f nginx.yml up -d
