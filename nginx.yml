@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
   proxy:
-    image: nginxproxy/nginx-proxy:1.9
+    image: nginx
     ports:
      - '80:80'
      - '443:443'
-    environment:
-      - VIRTUAL_HOST=smartmeter.run.place
+   # environment:
+   #   - VIRTUAL_HOST=smartmeter.run.place
     networks:
       - nginx_ingress
     volumes:
