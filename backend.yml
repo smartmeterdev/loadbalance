@@ -10,37 +10,68 @@ services:
       - nginx_ingress
       - backend_net
     deploy:
-      replicas: 2
+      replicas: 3
       placement:
         constraints: [node.role == manager]
-  moodle:
-    image: app-moodle
+    config:
+      - src=nginx_conf,target/etc/nginx/nginx.conf
+      - src=nginx_moodle_conf,target/etc/nginx/conf.d/moodle.conf
+      - src=nginx_portainer_conf,target/etc/nginx/conf.d/portaniner.conf
+  
+  portainer:
+    image: portainer/portainer-ce:latest
+    ports:
+      - "9000:9000"
     deploy:
-      replicas: 2
+      restart_policy:
+        condition: on-failure
+      replicas: 1
       placement:
-        constraints: [node.role == node]
+        constraints: [node.role == manager]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - admin-password-file=./etc/portainer/portainer_pass
+
+  portainer_agent:
+    image: portainer/agent:latest
+    deploy:
+      mode: global   # roda em todos os nós do Swarm
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
     networks:
       - backend_net
+
+
   proxysql:
    image: proxysql/proxysql:latest
    ports:
      - "3306:6033"
-   volumes:
-     - ./proxysql.cnf:/etc/proxysql.cnf
-     - proxysql_data:/var/lib/proxysql
+   config:
+      - src=proxy_cnf,target/etc/proxysql.cnf
    networks:
         backend_net:
-            ipv4_address: 172.16.10.14
    deploy:
-      replicas: 1
+      replicas: 3
       placement:
         constraints: [node.role == node]
+
+
+#  moodle:
+#    image: app-moodle
+#    deploy:
+#      replicas: 3
+#      placement:
+#        constraints: [node.role == node]
+#    networks:
+#      - backend_net
+
   db01:
     image: ustcweizhou/mariadb-cluster:latest
     hostname: db01
     networks:
         backend_net:
-            ipv4_address: 172.16.10.11
     volumes:
       - docker_db01:/var/lib/mysql
     healthcheck:
@@ -66,7 +97,6 @@ services:
         - db01
     networks:
         backend_net:
-            ipv4_address: 172.16.10.12
     volumes:
       - docker_db02:/var/lib/mysql
     healthcheck:
@@ -94,7 +124,6 @@ services:
 
     networks:
         backend_net:
-            ipv4_address: 172.16.10.13
     volumes:
       - docker_db03:/var/lib/mysql
     environment:
@@ -122,5 +151,4 @@ networks:
             com.docker.network.bridge.name: "backend_net"
         ipam:
             driver: default
-            config:
-                - subnet: 172.16.10.0/24
+
