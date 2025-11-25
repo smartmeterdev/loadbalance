@@ -35,6 +35,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - admin-password-file=./etc/portainer/portainer_pass
+    networks:
+      - backend_net
 
   portainer_agent:
     image: portainer/agent:latest
@@ -161,9 +163,4 @@ networks:
     name: nginx_ingress
     attachable: true
   backend_net:
-        driver: bridge
-        driver_opts:
-            com.docker.network.bridge.name: "backend_net"
-        ipam:
-            driver: default
-
+        driver: overlay
