@@ -52,7 +52,7 @@ services:
    ports:
      - "3306:6033"
    configs:
-      - source: proxy_cnf
+      - source: proxysql_cnf
         target: /etc/proxysql.cnf
    networks:
         backend_net:
