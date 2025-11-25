@@ -14,7 +14,7 @@ services:
       placement:
         constraints: [node.role == manager]
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/tmp/docker.sock:ro
     configs:
       - source: nginx_conf
         target: /etc/nginx/nginx.conf
@@ -62,12 +62,12 @@ services:
    networks:
         backend_net:
    deploy:
+      mode: replicated
       replicas: 3
-      restart_policy:
-        condition: on-failure
       placement:
         constraints: [node.role == node]
-
+      restart_policy:
+        condition: on-failure
 
 #  moodle:
 #    image: app-moodle
