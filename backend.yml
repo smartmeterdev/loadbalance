@@ -97,9 +97,11 @@ services:
       - DB_ROOT_PASSWORD=cloudstack
       - DB_MARIABACKUP_PASSWORD=cloudstack
     deploy:
+      restart_policy:
+        condition: on-failure
       replicas: 1
       placement:
-        constraints: [node.role == node]
+        constraints: [node.role == node-1]
 
   db02:
     image: ustcweizhou/mariadb-cluster:latest
@@ -122,9 +124,11 @@ services:
       - DB_ROOT_PASSWORD=cloudstack
       - DB_MARIABACKUP_PASSWORD=cloudstack
     deploy:
+      restart_policy:
+        condition: on-failure
       replicas: 1
       placement:
-        constraints: [node.role == node]
+        constraints: [node.role == node-2]
 
   db03:
     image: ustcweizhou/mariadb-cluster:latest
@@ -143,9 +147,11 @@ services:
       - DB_ROOT_PASSWORD=cloudstack
       - DB_MARIABACKUP_PASSWORD=cloudstack
     deploy:
+      restart_policy:
+        condition: on-failure
       replicas: 1
       placement:
-        constraints: [node.role == node]
+        constraints: [node.role == node-3]
 configs:
   nginx_conf:
     file: ./etc/nginx/nginx.conf
