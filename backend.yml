@@ -13,10 +13,13 @@ services:
       replicas: 3
       placement:
         constraints: [node.role == manager]
-    config:
-      - src=nginx_conf,target/etc/nginx/nginx.conf
-      - src=nginx_moodle_conf,target/etc/nginx/conf.d/moodle.conf
-      - src=nginx_portainer_conf,target/etc/nginx/conf.d/portaniner.conf
+    configs:
+      - source: nginx_conf
+        target: /etc/nginx/nginx.conf
+      - source: nginx_moodle_conf
+        target: /etc/nginx/conf.d/moodle.conf
+      - source: nginx_portainer_conf
+        target: /etc/nginx/conf.d/portaniner.conf
   
   portainer:
     image: portainer/portainer-ce:latest
@@ -48,8 +51,9 @@ services:
    image: proxysql/proxysql:latest
    ports:
      - "3306:6033"
-   config:
-      - src=proxy_cnf,target/etc/proxysql.cnf
+   configs:
+      - source: proxy_cnf
+        target: /etc/proxysql.cnf
    networks:
         backend_net:
    deploy:
