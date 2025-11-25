@@ -13,6 +13,8 @@ services:
       replicas: 3
       placement:
         constraints: [node.role == manager]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     configs:
       - source: nginx_conf
         target: /etc/nginx/nginx.conf
@@ -33,8 +35,9 @@ services:
         constraints: [node.role == manager]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - admin-password-file=./etc/portainer/portainer_pass
+    configs:
+      source: admin-password-file
+      target: /tmp/portainer_password
     networks:
       - backend_net
 
@@ -154,6 +157,8 @@ configs:
     file: ./etc/nginx/conf.d/portainer.conf
   proxysql_cnf:
     file: ./etc/proxysql/proxysql.cnf
+  admin-password-file:
+    file: ./etc/portainer/portainer_pass
 
 volumes:
   docker_db01:
