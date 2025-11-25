@@ -163,4 +163,4 @@ networks:
     name: nginx_ingress
     attachable: true
   backend_net:
-        driver: bridge
+        driver: overlay
