@@ -36,8 +36,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     configs:
-      source: admin-password-file
-      target: /tmp/portainer_password
+      - source: admin-password-file
+        target: /tmp/portainer_password
     networks:
       - backend_net
 
