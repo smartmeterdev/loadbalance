@@ -24,10 +24,12 @@ services:
         target: /etc/nginx/conf.d/portaniner.conf
   
   portainer:
-    image: portainer/portainer-ce:latest
+    image: portainer/portainer-ce:lts
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
     ports:
-      - "9000:9000"
       - "9443:9443"
+      - "9000:9000"
+      - "8000:8000"
     deploy:
       restart_policy:
         condition: on-failure
@@ -36,6 +38,7 @@ services:
         constraints: [node.role == manager]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
     configs:
       - source: admin-password-file
         target: /run/secrets/portainer
@@ -172,6 +175,7 @@ volumes:
   docker_db02:
   docker_db03:
   proxysql_data:
+  portainer_data:
 networks:
   nginx_ingress:
     name: nginx_ingress
