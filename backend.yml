@@ -27,6 +27,7 @@ services:
     image: portainer/portainer-ce:latest
     ports:
       - "9000:9000"
+      - "9443:9443"
     deploy:
       restart_policy:
         condition: on-failure
@@ -101,7 +102,7 @@ services:
         condition: on-failure
       replicas: 1
       placement:
-        constraints: [node.role == node-1]
+        constraints: [node.role == worker1]
 
   db02:
     image: ustcweizhou/mariadb-cluster:latest
@@ -128,7 +129,7 @@ services:
         condition: on-failure
       replicas: 1
       placement:
-        constraints: [node.role == node-2]
+        constraints: [node.role == worker2]
 
   db03:
     image: ustcweizhou/mariadb-cluster:latest
@@ -151,7 +152,7 @@ services:
         condition: on-failure
       replicas: 1
       placement:
-        constraints: [node.role == node-3]
+        constraints: [node.role == worker3]
 configs:
   nginx_conf:
     file: ./etc/nginx/nginx.conf
