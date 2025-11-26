@@ -105,7 +105,7 @@ services:
         condition: on-failure
       replicas: 1
       placement:
-        constraints: [node.role == worker1]
+        constraints: [node.role == worker]
 
   db02:
     image: ustcweizhou/mariadb-cluster:latest
@@ -132,7 +132,7 @@ services:
         condition: on-failure
       replicas: 1
       placement:
-        constraints: [node.role == worker2]
+        constraints: [node.role == worker]
 
   db03:
     image: ustcweizhou/mariadb-cluster:latest
@@ -155,7 +155,7 @@ services:
         condition: on-failure
       replicas: 1
       placement:
-        constraints: [node.role == worker3]
+        constraints: [node.role == worker]
 configs:
   nginx_conf:
     file: ./etc/nginx/nginx.conf
