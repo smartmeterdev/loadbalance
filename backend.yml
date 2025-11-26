@@ -37,7 +37,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     configs:
       - source: admin-password-file
-        target: /tmp/portainer_password
+        target: /run/secrets/portainer
     networks:
       - backend_net
 
