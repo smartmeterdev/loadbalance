@@ -76,7 +76,7 @@ services:
         condition: on-failure
 
   moodle:
-    image: nginx-moodle
+    image: manoelra66/nginx-moodle
     deploy:
       replicas: 3
       placement:
