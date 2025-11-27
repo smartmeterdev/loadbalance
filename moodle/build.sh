@@ -11,4 +11,4 @@ rm moodle-latest-501.zip
 
 docker login
 
-docker manoelra66/nginx-moodle
+docker push manoelra66/nginx-moodle
