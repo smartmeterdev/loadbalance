@@ -24,13 +24,13 @@ services:
         target: /etc/nginx/conf.d/portaniner.conf
     depends_on:
         - portainer
-        #- moodle
+        - moodle
   portainer:
     image: portainer/portainer-ce:lts
    # command: -H tcp://tasks.agent:9001 --tlsskipverify
-    ports:
+    #ports:
     #  - "9443:9443"
-      - "9000:9000"
+    #  - "9000:9000"
     #  - "8000:8000"
     deploy:
       restart_policy:
@@ -75,14 +75,14 @@ services:
       restart_policy:
         condition: on-failure
 
-#  moodle:
-#    image: app-moodle
-#    deploy:
-#      replicas: 3
-#      placement:
-#        constraints: [node.role == node]
-#    networks:
-#      - backend_net
+  moodle:
+    image: nginx-moodle
+    deploy:
+      replicas: 3
+      placement:
+        constraints: [node.role == worker]
+    networks:
+      - backend_net
 
   db01:
     image: ustcweizhou/mariadb-cluster:latest

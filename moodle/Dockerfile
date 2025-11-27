@@ -33,17 +33,17 @@ RUN apk add --no-cache \
 RUN ln -s /usr/bin/php84 /usr/bin/php
 
 # Configure nginx - http
-COPY config/nginx.conf /etc/nginx/nginx.conf
+COPY moodle/config/nginx.conf /etc/nginx/nginx.conf
 # Configure nginx - default server
-COPY config/conf.d /etc/nginx/conf.d/
+COPY moodle/config/conf.d /etc/nginx/conf.d/
 
 # Configure PHP-FPM
 ENV PHP_INI_DIR /etc/php84
-COPY config/fpm-pool.conf ${PHP_INI_DIR}/php-fpm.d/www.conf
-COPY config/php.ini ${PHP_INI_DIR}/conf.d/custom.ini
+COPY moodle/config/fpm-pool.conf ${PHP_INI_DIR}/php-fpm.d/www.conf
+COPY moodle/config/php.ini ${PHP_INI_DIR}/conf.d/custom.ini
 
 # Configure supervisord
-COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY moodle/config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Make sure files/folders needed by the processes are accessable when they run under the nobody user
 RUN chown -R nobody:nobody /var/www/html /run /var/lib/nginx /var/log/nginx
@@ -63,7 +63,7 @@ CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 # Configure a healthcheck to validate that everything is up&running
 HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/fpm-ping || exit 1
 
-COPY --chown=nobody ./moodle  /var/www/html/
+COPY --chown=nobody moodle/moodle  /var/www/html/
 # Configure Nginx
 #COPY ./nginx.conf /etc/nginx/nginx.conf
 
