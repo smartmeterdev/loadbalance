@@ -23,8 +23,7 @@ services:
       - source: nginx_portainer_conf
         target: /etc/nginx/conf.d/portaniner.conf
     depends_on:
-        portainer:
-          condition: service_healthy
+        - portainer
         #- moodle
   portainer:
     image: portainer/portainer-ce:lts
