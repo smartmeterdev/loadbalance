@@ -22,7 +22,10 @@ services:
  #       target: /etc/nginx/conf.d/moodle.conf
       - source: nginx_portainer_conf
         target: /etc/nginx/conf.d/portaniner.conf
-  
+    depends_on:
+        portainer:
+          condition: service_healthy
+        #- moodle
   portainer:
     image: portainer/portainer-ce:lts
    # command: -H tcp://tasks.agent:9001 --tlsskipverify
