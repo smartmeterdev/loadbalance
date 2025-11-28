@@ -79,11 +79,11 @@ services:
   moodle:
     image: docker.io/manoelra66/nginx-moodle
     deploy:
+      restart_policy:
+        condition: on-failure
       replicas: 3
       placement:
         constraints: [node.role == worker]
-      restart_policy:
-        condition: on-failure
     configs:
       - source: moodle_setup
         target: /var/www/html/
@@ -150,7 +150,6 @@ services:
     depends_on:
         - db01   
         - db02
-
     networks:
         dmz:
     volumes:
