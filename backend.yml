@@ -8,7 +8,7 @@ services:
      - '443:443'
     networks:
       - nginx_ingress
-      - backend_net
+      - dmz
     deploy:
       replicas: 3
       placement:
@@ -45,7 +45,7 @@ services:
       - source: admin-password-file
         target: /run/secrets/portainer
     networks:
-      - backend_net
+      - dmz
 
   portainer_agent:
     image: portainer/agent:latest
@@ -55,7 +55,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
     networks:
-      - backend_net
+      - dmz
 
 
   proxysql:
@@ -66,7 +66,7 @@ services:
       - source: proxysql_cnf
         target: /etc/proxysql.cnf
    networks:
-        backend_net:
+        dmz:
    deploy:
       mode: replicated
       replicas: 3
@@ -81,16 +81,19 @@ services:
       replicas: 3
       placement:
         constraints: [node.role == worker]
+    configs:
+      - source: moodle_setup
+        target: /var/www/html/
     ports:
       - "8080:8080"
     networks:
-      - backend_net
+      - dmz
 
   db01:
     image: ustcweizhou/mariadb-cluster:latest
     hostname: db01
     networks:
-        backend_net:
+        dmz:
     volumes:
       - docker_db01:/var/lib/mysql
     healthcheck:
@@ -117,7 +120,7 @@ services:
     depends_on:
         - db01
     networks:
-        backend_net:
+        dmz:
     volumes:
       - docker_db02:/var/lib/mysql
     healthcheck:
@@ -146,7 +149,7 @@ services:
         - db02
 
     networks:
-        backend_net:
+        dmz:
     volumes:
       - docker_db03:/var/lib/mysql
     environment:
@@ -173,6 +176,8 @@ configs:
     file: ./etc/proxysql/proxysql.cnf
   admin-password-file:
     file: ./etc/portainer/portainer_pass
+  moodle_setup:
+    file: ./moodle/config.php 
 
 volumes:
   docker_db01:
@@ -184,5 +189,7 @@ networks:
   nginx_ingress:
     name: nginx_ingress
     attachable: true
-  backend_net:
-        driver: overlay
+  dmz:
+    name: dmz
+    driver: overlay
+    external: false

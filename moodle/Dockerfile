@@ -4,6 +4,7 @@ LABEL Maintainer="Tim de Pater <code@trafex.nl>"
 LABEL Description="Lightweight container with Nginx 1.26 & PHP 8.4 based on Alpine Linux."
 # Setup document root
 WORKDIR /var/www/html
+WORKDIR /var/www/moodledata
 
 # Install packages and remove default server definition
 RUN apk add --no-cache \
@@ -65,5 +66,5 @@ HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/fpm-pin
 
 COPY --chown=nobody ./moodle  /var/www/html/
 # Configure Nginx
-#COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY config/nginx.conf /etc/nginx/nginx.conf
 
