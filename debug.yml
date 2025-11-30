@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+
+
+  portainer:
+    image: portainer/portainer-ce:lts
+   # command: -H tcp://tasks.agent:9001 --tlsskipverify
+    ports:
+    #  - "9443:9443"
+      - "9000:9000"
+    #  - "8000:8000"
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+    networks:
+      - dmz
+
+
+
+
+  moodle:
+    image: docker.io/manoelra66/nginx-moodle
+    volumes:
+      - moodle_data:/var/www/
+    configs:
+      - source: config_moodle
+        target: /var/www/html/config.php
+    ports:
+      - "8080:8080"
+    networks:
+      - dmz
+      
+configs:
+  config_moodle:
+    file: ./moodle/config.php
+volumes:
+  portainer_data:
+  moodle_data:
+networks:
+  nginx_ingress:
+    name: nginx_ingress
+    attachable: true
+  dmz:
+    name: dmz
+ #   driver: overlay
+ #   external: false

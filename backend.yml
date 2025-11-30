@@ -84,9 +84,11 @@ services:
       replicas: 3
       placement:
         constraints: [node.role == worker]
+    volumes:
+      - moodle_data:/var/www/
     configs:
-      - source: moodle_setup
-        target: /var/www/html/
+      - source: config_setup
+        target: /var/www/html/config.php
     ports:
       - "8080:8080"
     networks:
@@ -178,8 +180,8 @@ configs:
     file: ./etc/proxysql/proxysql.cnf
   admin-password-file:
     file: ./etc/portainer/portainer_pass
-  moodle_setup:
-    file: ./moodle/config.php 
+  config_moodle:
+    file: ./moodle/config.php
 
 volumes:
   docker_db01:

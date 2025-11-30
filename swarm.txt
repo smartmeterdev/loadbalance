@@ -1,0 +1,4 @@
+docker swarm init
+docker swarm join-token worker
+
+hostnamectl set-hostname your-new-hostname
