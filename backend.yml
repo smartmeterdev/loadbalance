@@ -28,23 +28,19 @@ services:
 
   portainer:
     image: portainer/portainer-ce:lts
-   # command: -H tcp://tasks.agent:9001 --tlsskipverify
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
     ports:
-    #  - "9443:9443"
       - "9000:9000"
-    #  - "8000:8000"
     deploy:
       restart_policy:
         condition: on-failure
       replicas: 1
       placement:
         constraints: [node.role == manager]
+    command: --admin-password $2y$05$54i9VofWuntmpdSdi9sB9O72IhpCcerLSe4VTC9vKCm3hNqOIfAh6
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
-    configs:
-      - source: admin-password-file
-        target: /run/secrets/portainer
     networks:
       - dmz
 
@@ -52,6 +48,8 @@ services:
     image: portainer/agent:latest
     deploy:
       mode: global   # roda em todos os nós do Swarm
+    ports:
+      - "9001:9001"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
@@ -93,6 +91,8 @@ services:
       - "8080:8080"
     networks:
       - dmz
+    depends_on:
+        - proxysql
 
   db01:
     image: ustcweizhou/mariadb-cluster:latest
@@ -178,8 +178,6 @@ configs:
     file: ./etc/nginx/conf.d/portainer.conf
   proxysql_cnf:
     file: ./etc/proxysql/proxysql.cnf
-  admin-password-file:
-    file: ./etc/portainer/portainer_pass
   config_moodle:
     file: ./moodle/config.php
 
