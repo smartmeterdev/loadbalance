@@ -28,7 +28,7 @@ services:
 
   portainer:
     image: portainer/portainer-ce:lts
-    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    command: -H tcp://tasks.agent:9001 --tlsskipverify && --admin-password $$2y$$05$$54i9VofWuntmpdSdi9sB9O72IhpCcerLSe4VTC9vKCm3hNqOIfAh6
     ports:
       - "9000:9000"
     deploy:
@@ -37,7 +37,7 @@ services:
       replicas: 1
       placement:
         constraints: [node.role == manager]
-    command: --admin-password $$2y$$05$54i9VofWuntmpdSdi9sB9O72IhpCcerLSe4VTC9vKCm3hNqOIfAh6
+    #command: --admin-password $2y$05$54i9VofWuntmpdSdi9sB9O72IhpCcerLSe4VTC9vKCm3hNqOIfAh6
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
@@ -85,7 +85,7 @@ services:
     volumes:
       - moodle_data:/var/www/
     configs:
-      - source: config_setup
+      - source: config_moodle
         target: /var/www/html/config.php
     ports:
       - "8080:8080"
@@ -187,6 +187,7 @@ volumes:
   docker_db03:
   proxysql_data:
   portainer_data:
+  moodle_data:
 networks:
   nginx_ingress:
     name: nginx_ingress
