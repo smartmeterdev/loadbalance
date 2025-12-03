@@ -37,7 +37,7 @@ services:
       replicas: 1
       placement:
         constraints: [node.role == manager]
-    command: --admin-password $2y$05$54i9VofWuntmpdSdi9sB9O72IhpCcerLSe4VTC9vKCm3hNqOIfAh6
+    command: --admin-password $$2y$$05$54i9VofWuntmpdSdi9sB9O72IhpCcerLSe4VTC9vKCm3hNqOIfAh6
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
